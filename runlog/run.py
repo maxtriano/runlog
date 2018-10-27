@@ -9,7 +9,7 @@ class Run(persistent.Persistent):
         if time:
             t = datetime.strptime(time, "%H:%M:%S")
             self.time = timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
-            self.pace = (time / 60.0) / distance
+            #self.pace = (time / 60.0) / distance
 
 
 
