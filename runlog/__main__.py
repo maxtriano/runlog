@@ -1,5 +1,4 @@
-from runlog.run import Run
-import sys, sqlite3
+import sys, sqlite3, time
 from datetime import datetime
 conn = sqlite3.connect('runs.db')
 c = conn.cursor()
@@ -13,11 +12,14 @@ c.execute("""CREATE TABLE IF NOT EXISTS runs (
     notes text );""")
 
 def main():
+    week_distance = 0
     print('\n=== runlog ===\n')
-    c.execute("SELECT * FROM runs WHERE ID = (SELECT MAX(ID)  FROM runs);")
-    row = c.fetchall()
-    print(row)
-    print('\n')
+
+    for row in c.execute("SELECT * FROM runs WHERE date BETWEEN strftime('%s', 'now') - 604800 AND strftime('%s', 'now')"):
+        week_distance += row[2]
+    
+    print('Past 7 days mileage: ', week_distance, '\n')
+    
     print("1) Add a run\n")
     choice = input('What would you like to do? ')
     
