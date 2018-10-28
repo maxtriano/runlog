@@ -1,4 +1,4 @@
-import sys, sqlite3, time
+import sys, sqlite3, time, pandas as pd
 from datetime import datetime
 conn = sqlite3.connect('runs.db')
 c = conn.cursor()
@@ -21,11 +21,13 @@ def main():
     print('Past 7 days mileage: ', week_distance, '\n')
     
     print("1) Add a run\n")
+    print("2) View recent runs\n")
     choice = input('What would you like to do? ')
     
     if choice == '1':
         add_run()
-        
+    elif choice == '2':
+        view_runs()
     conn.close()
 
 def add_run():
@@ -40,6 +42,11 @@ def add_run():
     c.execute("INSERT INTO runs (date, distance, duration, type, notes) VALUES (strftime('%s', 'now'), ?, ?, ?, ?)"
                     , (run_distance, run_time, run_type, run_notes))
     conn.commit()
+
+def view_runs():
+    n = input("How many runs would you like to view?: ")
+    sql = "SELECT * FROM runs ORDER BY date DESC LIMIT %s;" % (n)
+    print(pd.read_sql_query(sql, conn))
 
 if __name__ == '__main__':
     main()
